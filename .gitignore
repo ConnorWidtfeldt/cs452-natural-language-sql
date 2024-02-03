@@ -1,5 +1,5 @@
 /venv
-/generator/Gemfile.lock
+Gemfile.lock
 
 # JetBrains
 .idea/

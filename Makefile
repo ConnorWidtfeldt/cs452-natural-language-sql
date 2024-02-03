@@ -1,4 +1,4 @@
-all: setup run
+all: setup generate_data/all run
 
 setup: venv requirements docker
 
@@ -19,15 +19,15 @@ docker/attach:
 
 clean:
 	@docker compose down --remove-orphans
-	@rm -rf venv
-	@rm -rf generator/vendor
-	@rm -rf generator/Gemfile.lock
+	@rm -rf venv vendor Gemfile.lock
 
-setup-generator:
-	@cd generator && bundle install
+generate_data/all: generate_data/setup generate_data
 
-generate:
-	@generator/generate_data.rb
+generate_data/setup:
+	@bundle install
+
+generate_data:
+	@ruby generate_data.rb
 
 run:
 	@venv/bin/python main.py

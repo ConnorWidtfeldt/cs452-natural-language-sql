@@ -1,4 +1,5 @@
 from __future__ import annotations
+from dotenv import load_dotenv
 from enum import Enum
 from functools import wraps
 from openai import OpenAI
@@ -8,6 +9,9 @@ import sys
 import textwrap
 import psycopg2
 import psycopg2.extras
+
+
+load_dotenv()
 
 
 class Role(str, Enum):
