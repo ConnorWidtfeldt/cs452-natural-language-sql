@@ -2,9 +2,10 @@ version: "3"
 
 services:
   postgres:
-    container_name: cs452-postgres
+    container_name: natural-language-sql-database
     build:
-      context: ./docker
+      context: ./
+      dockerfile: Dockerfile
     environment:
       POSTGRES_USER: cs452
       POSTGRES_PASSWORD: cs452
@@ -13,10 +14,5 @@ services:
     ports:
       - "15432:5432"
     volumes:
-      # - postgres:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     restart: always
-
-volumes:
-  postgres:
-    name: cs452-postgres

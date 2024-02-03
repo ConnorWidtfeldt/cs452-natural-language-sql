@@ -11,12 +11,16 @@ ActiveRecord::Base.establish_connection(
   database: "cs452",
 )
 
-# class ActiveRecord::Base
-#   def self.delete_all
-#     connection.execute("DELETE FROM public.#{table_name}")
-#     connection.execute("ALTER SEQUENCE public.#{table_name}_id_seq RESTART WITH 1")
-#   end
-# end
+class ActiveRecord::Base
+  def self.delete_all
+    connection.execute("DELETE FROM public.#{table_name}")
+    sequence_name = "#{table_name}_id_seq"
+    return if !connection.columns(table_name).any? {
+      |column| column.name == "id" && column.default_function == "nextval('#{sequence_name}'::regclass)"
+    }
+    connection.execute("ALTER SEQUENCE public.#{sequence_name} RESTART WITH 1")
+  end
+end
 
 class Artist < ActiveRecord::Base
   self.table_name = :artist
@@ -143,6 +147,8 @@ class User < ActiveRecord::Base
   has_many :post_votes
 end
 
+# Clear all data
+puts "Clearing existing data..."
 ActiveRecord::Base.connection.execute("SET session_replication_role = 'replica'")
 [
   User, Artist, ArtistName, ArtistUrl, Pool, PoolPost, Post, PostApproval, PostComment,
@@ -152,11 +158,13 @@ ActiveRecord::Base.connection.execute("SET session_replication_role = 'replica'"
 ActiveRecord::Base.connection.execute("SET session_replication_role = 'origin'")
 
 # Generate Users
+puts "Generating users..."
 100.times do
   User.create(name: Faker::Name.name, created_at: Faker::Time.backward(days: 365))
 end
 
 # Generate Tags
+puts "Generating tags..."
 known_tags = [
   "mountain",
   "car",
@@ -191,17 +199,28 @@ end
   Tag.create(name: name)
 end
 
+# Generate TagAliases and TagImplications
+puts "Generating tag aliases and implications..."
+Tag.limit(10).each do |tag|
+  other_tag = Tag.where.not(id: tag).order("RANDOM()").first
+  TagAlias.create(antecedent_tag: tag, consequent_tag: other_tag)
+  TagImplication.create(antecedent_tag: tag, consequent_tag: other_tag)
+end
+
 # Generate Posts
+puts "Generating posts..."
 5000.times do
   Post.create(created_at: Faker::Time.backward(days: 365))
 end
 
 # Generate Artists
+puts "Generating artists..."
 100.times do
   Artist.create(creator: User.order("RANDOM()").first, created_at: Faker::Time.backward(days: 365))
 end
 
 # Generate ArtistNames and ArtistUrls
+puts "Generating artist names and urls..."
 Artist.all.each do |artist|
   2.times do
     ArtistName.create(artist: artist, name: Faker::Artist.name, created_at: Faker::Time.backward(days: 365))
@@ -210,11 +229,13 @@ Artist.all.each do |artist|
 end
 
 # Generate Pools
+puts "Generating pools..."
 100.times do
   Pool.create(name: Faker::Lorem.sentence, creator: User.order("RANDOM()").first, created_at: Faker::Time.backward(days: 365))
 end
 
 # Associate Posts with Pools
+puts "Associating posts with pools..."
 posts = Post.all
 Pool.all.each do |pool|
   posts.sample(15).each do |post|
@@ -223,6 +244,7 @@ Pool.all.each do |pool|
 end
 
 # Generate Post related data
+puts "Generating post related data..."
 Post.all.each do |post|
   rand(1..10).times do
     if rand < 0.3 # 30% chance
@@ -253,6 +275,7 @@ Post.all.each do |post|
 end
 
 # Generate PostTags
+puts "Tagging posts..."
 tags = Tag.all
 users = User.all
 Post.all.each do |post|
@@ -260,11 +283,4 @@ Post.all.each do |post|
   tags.each do |tag|
     PostTag.create(post: post, tag: tag, user: users.sample, created_at: Faker::Time.backward(days: 365))
   end
-end
-
-# Generate TagAliases and TagImplications
-Tag.limit(10).each do |tag|
-  other_tag = Tag.where.not(id: tag).order("RANDOM()").first
-  TagAlias.create(antecedent_tag: tag, consequent_tag: other_tag)
-  TagImplication.create(antecedent_tag: tag, consequent_tag: other_tag)
 end
