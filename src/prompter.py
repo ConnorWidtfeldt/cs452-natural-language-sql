@@ -13,6 +13,8 @@ def system_message() -> str:
     - All queries should be immediately executable, so don't include any comments or variables that are not defined in the query
     - Keep the response as clean and concise as possible, but aim for fast execution time
     - Don't include any non-sql code like Markdown code blocks
+    - If there are more than one columns, put each on a new line for readability
+    - Always use snake case for column names in select statements
 
     Here is the database schema:
     {schema}
@@ -33,7 +35,7 @@ def should_followup(prompt: str) -> str:
     """
 
 
-def select_prompt(prompt: str) -> str:
+def user_prompt(prompt: str) -> str:
     return f"""
     When answering this question, provide only the SQL query that would answer the question.
     Do not include any other information in your response.

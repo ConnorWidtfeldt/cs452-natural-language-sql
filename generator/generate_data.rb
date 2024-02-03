@@ -11,33 +11,260 @@ ActiveRecord::Base.establish_connection(
   database: "cs452",
 )
 
-class ActiveRecord::Base
-  def self.delete_all
-    connection.execute("DELETE FROM public.#{table_name}")
-    connection.execute("ALTER SEQUENCE public.#{table_name}_id_seq RESTART WITH 1")
-  end
+# class ActiveRecord::Base
+#   def self.delete_all
+#     connection.execute("DELETE FROM public.#{table_name}")
+#     connection.execute("ALTER SEQUENCE public.#{table_name}_id_seq RESTART WITH 1")
+#   end
+# end
+
+class Artist < ActiveRecord::Base
+  self.table_name = :artist
+  belongs_to :creator, class_name: "User", optional: true
+  has_many :artist_names
+  has_many :artist_urls
+end
+
+class ArtistName < ActiveRecord::Base
+  self.table_name = :artist_name
+  belongs_to :artist
+end
+
+class ArtistUrl < ActiveRecord::Base
+  self.table_name = :artist_url
+  belongs_to :artist
+end
+
+class Pool < ActiveRecord::Base
+  self.table_name = :pool
+  belongs_to :creator, class_name: "User"
+  has_many :pool_posts
+  has_many :posts, through: :pool_posts
+end
+
+class PoolPost < ActiveRecord::Base
+  self.table_name = :pool_post
+  belongs_to :pool
+  belongs_to :post
+end
+
+class Post < ActiveRecord::Base
+  self.table_name = :post
+  has_many :pool_posts
+  has_many :pools, through: :pool_posts
+  has_many :post_approvals
+  has_many :post_disapprovals
+  has_many :post_comments
+  has_many :post_favorites
+  has_many :post_images
+  has_many :post_tags
+  has_many :tags, through: :post_tags
+  has_many :post_votes
+end
+
+class PostApproval < ActiveRecord::Base
+  self.table_name = :post_approval
+  belongs_to :user
+  belongs_to :post
+end
+
+class PostComment < ActiveRecord::Base
+  self.table_name = :post_comment
+  belongs_to :post
+  belongs_to :user
+  has_many :post_comment_votes
+end
+
+class PostCommentVote < ActiveRecord::Base
+  self.table_name = :post_comment_vote
+  belongs_to :post_comment
+  belongs_to :user
+end
+
+class PostDisapproval < ActiveRecord::Base
+  self.table_name = :post_disapproval
+  belongs_to :user
+  belongs_to :post
+end
+
+class PostFavorite < ActiveRecord::Base
+  self.table_name = :post_favorite
+  belongs_to :post
+  belongs_to :user
+end
+
+class PostImage < ActiveRecord::Base
+  self.table_name = :post_image
+  belongs_to :post
+end
+
+class PostTag < ActiveRecord::Base
+  self.table_name = :post_tag
+  belongs_to :post
+  belongs_to :tag
+  belongs_to :user
+end
+
+class PostVote < ActiveRecord::Base
+  self.table_name = :post_vote
+  belongs_to :post
+  belongs_to :user
 end
 
 class Tag < ActiveRecord::Base
-  self.table_name = "tag"
+  self.table_name = :tag
+  has_many :post_tags
+  has_many :posts, through: :post_tags
+  has_many :tag_aliases, foreign_key: "antecedent_tag_id"
+  has_many :tag_implications, foreign_key: "antecedent_tag_id"
+end
+
+class TagAlias < ActiveRecord::Base
+  self.table_name = :tag_alias
+  belongs_to :antecedent_tag, class_name: "Tag"
+  belongs_to :consequent_tag, class_name: "Tag"
+end
+
+class TagImplication < ActiveRecord::Base
+  self.table_name = :tag_implication
+  belongs_to :antecedent_tag, class_name: "Tag"
+  belongs_to :consequent_tag, class_name: "Tag"
 end
 
 class User < ActiveRecord::Base
-  self.table_name = "user"
+  self.table_name = :user
+  has_many :posts, foreign_key: "creator_id"
+  has_many :pools, foreign_key: "creator_id"
+  has_many :artists, foreign_key: "creator_id"
+  has_many :post_approvals
+  has_many :post_disapprovals
+  has_many :post_comments
+  has_many :post_favorites
+  has_many :post_votes
 end
 
-# == GENERATE == #
+ActiveRecord::Base.connection.execute("SET session_replication_role = 'replica'")
+[
+  User, Artist, ArtistName, ArtistUrl, Pool, PoolPost, Post, PostApproval, PostComment,
+  PostCommentVote, PostDisapproval, PostFavorite, PostImage, PostTag, PostVote, Tag, TagAlias,
+  TagImplication
+].each(&:delete_all)
+ActiveRecord::Base.connection.execute("SET session_replication_role = 'origin'")
 
-User.delete_all
+# Generate Users
 100.times do
-  User.create(
-    name: Faker::Name.name,
-  )
+  User.create(name: Faker::Name.name, created_at: Faker::Time.backward(days: 365))
 end
 
-Tag.delete_all
-1000.times do
-  Tag.create(
-    name: Faker::Lorem.word,
-  )
+# Generate Tags
+known_tags = [
+  "mountain",
+  "car",
+  "cat",
+  "dog",
+  "bird",
+  "fish",
+  "tree",
+  "flower",
+  "house",
+  "building",
+  "sky",
+  "cloud",
+  "sun",
+  "moon",
+  "truck",
+  "bus",
+  "human",
+  "animal",
+  "plant",
+  "water",
+  "fire",
+]
+known_tags.each do |name|
+  next if Tag.exists?(name: name)
+  Tag.create(name: name)
+end
+
+10.times do
+  name = Faker::Verb.unique.base.downcase.gsub(/\s+/, "_")
+  next if Tag.exists?(name: name)
+  Tag.create(name: name)
+end
+
+# Generate Posts
+5000.times do
+  Post.create(created_at: Faker::Time.backward(days: 365))
+end
+
+# Generate Artists
+100.times do
+  Artist.create(creator: User.order("RANDOM()").first, created_at: Faker::Time.backward(days: 365))
+end
+
+# Generate ArtistNames and ArtistUrls
+Artist.all.each do |artist|
+  2.times do
+    ArtistName.create(artist: artist, name: Faker::Artist.name, created_at: Faker::Time.backward(days: 365))
+    ArtistUrl.create(artist: artist, url: Faker::Internet.url, created_at: Faker::Time.backward(days: 365))
+  end
+end
+
+# Generate Pools
+100.times do
+  Pool.create(name: Faker::Lorem.sentence, creator: User.order("RANDOM()").first, created_at: Faker::Time.backward(days: 365))
+end
+
+# Associate Posts with Pools
+posts = Post.all
+Pool.all.each do |pool|
+  posts.sample(15).each do |post|
+    PoolPost.create(pool: pool, post: post)
+  end
+end
+
+# Generate Post related data
+Post.all.each do |post|
+  rand(1..10).times do
+    if rand < 0.3 # 30% chance
+      PostApproval.create(user: User.order("RANDOM()").first, post: post, created_at: Faker::Time.backward(days: 365)) rescue nil
+    end
+
+    if rand < 0.3
+      PostDisapproval.create(user: User.order("RANDOM()").first, post: post, message: Faker::Lorem.sentence, created_at: Faker::Time.backward(days: 365)) rescue nil
+    end
+
+    if rand < 0.3
+      PostComment.create(post: post, user: User.order("RANDOM()").first, body: Faker::Lorem.paragraph, created_at: Faker::Time.backward(days: 365)) rescue nil
+    end
+
+    if rand < 0.3
+      PostFavorite.create(post: post, user: User.order("RANDOM()").first, created_at: Faker::Time.backward(days: 365)) rescue nil
+    end
+
+    if rand < 0.3
+      PostImage.create(post: post, url: Faker::Internet.url) rescue nil
+    end
+
+    if rand < 0.3
+      score = rand < 0.7 ? 1 : -1
+      PostVote.create(post: post, user: User.order("RANDOM()").first, score: score, created_at: Faker::Time.backward(days: 365)) rescue nil
+    end
+  end
+end
+
+# Generate PostTags
+tags = Tag.all
+users = User.all
+Post.all.each do |post|
+  tags = tags.sample(rand(50..100))
+  tags.each do |tag|
+    PostTag.create(post: post, tag: tag, user: users.sample, created_at: Faker::Time.backward(days: 365))
+  end
+end
+
+# Generate TagAliases and TagImplications
+Tag.limit(10).each do |tag|
+  other_tag = Tag.where.not(id: tag).order("RANDOM()").first
+  TagAlias.create(antecedent_tag: tag, consequent_tag: other_tag)
+  TagImplication.create(antecedent_tag: tag, consequent_tag: other_tag)
 end

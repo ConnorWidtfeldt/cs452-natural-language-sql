@@ -20,7 +20,7 @@ clean:
 setup-generator:
 	@cd generator && bundle install
 
-generator:
+generate:
 	@generator/generate_data.rb
 
 run:
