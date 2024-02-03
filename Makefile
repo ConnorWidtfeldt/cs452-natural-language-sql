@@ -22,3 +22,6 @@ setup-generator:
 
 generator:
 	@generator/generate_data.rb
+
+run:
+	@python3 src/main.py

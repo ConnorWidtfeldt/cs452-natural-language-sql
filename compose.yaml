@@ -4,7 +4,7 @@ services:
   postgres:
     container_name: cs452-postgres
     build:
-      context: ./config/docker
+      context: ./docker
     environment:
       POSTGRES_USER: cs452
       POSTGRES_PASSWORD: cs452
@@ -14,7 +14,7 @@ services:
       - "15432:5432"
     volumes:
       # - postgres:/var/lib/postgresql/data
-      - ./config/initdb:/docker-entrypoint-initdb.d:ro
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     restart: always
 
 volumes:
