@@ -44,9 +44,15 @@ def user_prompt(prompt: str) -> str:
     {prompt}
     """
 
-def friendly_response_prompt(results: str) -> str:
+def friendly_response_prompt(question: str, results: str) -> str:
     return f"""
-    Generate a friendly response based on these results:
-    
+    Given the following prompt:
+    {question}
+
+    The following results were generated:
     {results}
+
+    Create a user-friendly interpretation of the results. Avoid using any SQL code, jargon, or special characters.
+    A non-technical person should be able to understand the response. Still try to be detailed.
+    If it makes sense, create a table of the data in a human-readable format.
     """

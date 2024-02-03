@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import time
@@ -81,6 +82,27 @@ def run_query(query: str):
     return results
 
 
+def friendly_response(question, results):
+    pretty_results = str(results)
+
+    response = client.chat.completions.create(
+        model=ai_model,
+        messages=[
+            message(Role.SYSTEM, prompter.system_message()),
+            message(Role.ASSISTANT, prompter.friendly_response_prompt(question, pretty_results)),
+        ],
+        stream=True,
+    )
+
+    for chunk in response:
+        content = chunk.choices[0].delta.content
+        if content:
+            sys.stdout.write(content)
+            sys.stdout.flush()
+        else:
+            sys.stdout.write("\n\n")
+
+
 def main():
     question = """
         Get all posts (and their score) that have the tag "mountain" with a score higher than 2.
@@ -94,12 +116,11 @@ def main():
         return
 
     results = run_query(query)
-    if results:
-        if isinstance(results, list):
-            for result in results:
-                print(result)
-        else:
-            print(results)
+    if not results:
+        print("No results were returned.")
+        return
+    
+    friendly_response(question, results)
 
 
 if __name__ == "__main__":
