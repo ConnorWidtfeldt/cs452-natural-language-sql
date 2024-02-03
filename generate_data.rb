@@ -66,6 +66,12 @@ class Post < ActiveRecord::Base
   has_many :post_votes
 end
 
+class PostArtist < ActiveRecord::Base
+  self.table_name = :post_artist
+  belongs_to :post
+  belongs_to :artist
+end
+
 class PostApproval < ActiveRecord::Base
   self.table_name = :post_approval
   belongs_to :user
@@ -151,7 +157,7 @@ end
 puts "Clearing existing data..."
 ActiveRecord::Base.connection.execute("SET session_replication_role = 'replica'")
 [
-  User, Artist, ArtistName, ArtistUrl, Pool, PoolPost, Post, PostApproval, PostComment,
+  User, Artist, ArtistName, ArtistUrl, Pool, PoolPost, Post, PostArtist, PostApproval, PostComment,
   PostCommentVote, PostDisapproval, PostFavorite, PostImage, PostTag, PostVote, Tag, TagAlias,
   TagImplication
 ].each(&:delete_all)
@@ -219,6 +225,13 @@ puts "Generating artists..."
   Artist.create(creator: User.order("RANDOM()").first, created_at: Faker::Time.backward(days: 365))
 end
 
+# Associate Posts with Artists
+Post.all.each do |post|
+  rand(1..2).times do
+    PostArtist.create(post: post, artist: Artist.order("RANDOM()").first) rescue nil
+  end
+end
+
 # Generate ArtistNames and ArtistUrls
 puts "Generating artist names and urls..."
 Artist.all.each do |artist|
@@ -243,6 +256,17 @@ Pool.all.each do |pool|
   end
 end
 
+disapproval_reasons = [
+  "Explicit content",
+  "Poor quality",
+  "Bad source",
+  "Bad tags",
+  "Incorrect artist",
+  "Incorrect description",
+  "DMCA",
+  "Other",
+]
+
 # Generate Post related data
 puts "Generating post related data..."
 Post.all.each do |post|
@@ -252,7 +276,7 @@ Post.all.each do |post|
     end
 
     if rand < 0.3
-      PostDisapproval.create(user: User.order("RANDOM()").first, post: post, message: Faker::Lorem.sentence, created_at: Faker::Time.backward(days: 365)) rescue nil
+      PostDisapproval.create(user: User.order("RANDOM()").first, post: post, message: disapproval_reasons.sample, created_at: Faker::Time.backward(days: 365)) rescue nil
     end
 
     if rand < 0.3
@@ -278,8 +302,9 @@ end
 puts "Tagging posts..."
 tags = Tag.all
 users = User.all
+tag_range = (tags.count * 0.5)..(tags.count * 0.8)
 Post.all.each do |post|
-  tags = tags.sample(rand(50..100))
+  tags = tags.sample(rand(tag_range))
   tags.each do |tag|
     PostTag.create(post: post, tag: tag, user: users.sample, created_at: Faker::Time.backward(days: 365))
   end

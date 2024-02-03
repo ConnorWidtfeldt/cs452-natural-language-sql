@@ -17,6 +17,9 @@ docker:
 docker/attach:
 	@docker compose up --build --remove-orphans --renew-anon-volumes --force-recreate
 
+docker/down:
+	@docker compose down
+
 clean:
 	@docker compose down --remove-orphans
 	@rm -rf venv vendor Gemfile.lock

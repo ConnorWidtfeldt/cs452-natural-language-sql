@@ -169,8 +169,10 @@ def main():
     chat = ChatGpt()
 
     question = """
-        Get all posts (and their score) that have the tag "mountain" with a score higher than 2.
-        Sort by score then by creation date.
+        Get a list of artist whose posts have received the most favorites in the past month. 
+        Get the name of each artist, not their ID.
+        Include the total number of favorites for each artist and sort them in descending order.
+        Limit to the top 5 artists.
     """
 
     query = chat.ask(

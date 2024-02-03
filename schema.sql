@@ -62,6 +62,13 @@ CREATE TABLE "pool_post" (
     PRIMARY KEY ("pool_id", "post_id")
 );
 
+-- This table creates a many-to-many relationship between posts and artists
+CREATE TABLE "post_artist" (
+    "post_id" bigint NOT NULL REFERENCES "post" ON DELETE CASCADE,
+    "artist_id" bigint NOT NULL REFERENCES "artist" ON DELETE CASCADE,
+    PRIMARY KEY ("post_id", "artist_id")
+);
+
 -- posts must be validated by a moderator before being visible to the public
 CREATE TABLE "post_approval" (
     "user_id" bigint NOT NULL REFERENCES "user" ON DELETE CASCADE,
