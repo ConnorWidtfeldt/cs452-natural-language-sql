@@ -7,6 +7,10 @@ The CS452 Natural Language SQL Project aims to bridge the gap between natural la
 
 The database serves as the backbone for a fictitious art-sharing website, designed to catalog and enhance the discoverability of art through user-contributed metadata and AI-generated tags. It facilitates a community-driven curation process, allowing users to vote on and favorite artworks, thereby elevating the most appreciated pieces for greater visibility. Additionally, the database supports the organization of artworks into thematic pools, making it easier for users to find and explore art that aligns with their interests. Through its structured schema, the database captures a wide range of information, from artist details to user interactions, ensuring a rich, searchable, and user-friendly repository of digital art and memes.
 
+## Diagram
+
+![Database Schema](schema.png)
+
 ## Output
 
 **Request:** 
@@ -65,6 +69,12 @@ Each post mentioned is exemplary in its own right, gathering substantial scores 
 ```
 
 See more responses in the [responses](responses) directory.
+
+### Prompting Strategies
+
+When I played around with making different requests to my application, I noticed a couple of interesting things. If I kept my questions simple, like asking for the latest posts, the app spit back simple SQL queries and easy-to-understand answers. But when I started asking for more detailed stuff, like finding the most liked art by artists this month, things got trickier. The SQL it generated was way more complex, with lots of joins and conditions, but it still managed to give me clear responses.
+
+I also saw that being clear and specific in what I asked for made a big difference. The app was really good at digging through the data to find exactly what I wanted, as long as I gave it enough details. And it didn't matter how complicated my requests got—whether I was linking users to their favorite artists or sorting tags by popularity, it handled it like a billiantly.
 
 ## Prerequisites
 
