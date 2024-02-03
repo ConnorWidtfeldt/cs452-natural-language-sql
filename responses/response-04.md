@@ -4,10 +4,8 @@ Track User Engagement with Art Posts
 
 ## Prompt:
 
-```
 For a specific user (Cathy Graham), show the number of posts they've voted on, favorited, and commented on within the last year.
 Provide a summary of their engagement across these activities.
-```
 
 ## Generated Query:
 
@@ -27,7 +25,6 @@ GROUP BY "user"."name"
 
 ## Friendly Response:
 
-```
 Cathy Graham has been quite active on the platform over the last year. Here's a summary of her engagement:
 
 - She voted on 81 posts, showing her interest in various content by either upvoting or downvoting them.
@@ -35,4 +32,3 @@ Cathy Graham has been quite active on the platform over the last year. Here's a 
 - She also shared her thoughts on 80 posts by commenting on them, contributing to discussions and sharing insights.
 
 Overall, Cathy's involvement across voting, favoriting, and commenting showcases her active participation and engagement with the content on the platform.
-```

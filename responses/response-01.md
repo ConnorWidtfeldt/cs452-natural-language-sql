@@ -4,12 +4,10 @@ Find the Most Popular Artists of the Month
 
 ## Prompt:
 
-```
 Get a list of artist whose posts have received the most favorites in the past month. 
 Get the name of each artist, not their ID.
 Include the total number of favorites for each artist and sort them in descending order.
 Limit to the top 5 artists.
-```
 
 ## Generated Query:
 
@@ -29,7 +27,6 @@ LIMIT 5
 
 ## Friendly Response:
 
-```
 The list below showcases artists whose artworks have been most favored by viewers in the past month. Each artist's name is followed by the total number of times their artworks were marked as favorites. These artists have stood out for their remarkable contributions and have been ranked according to the popularity of their works, with the artist receiving the most favorites at the top.
 
 Warhol - 96 favorites
@@ -39,4 +36,3 @@ Da Vinci - 83 favorites
 Monet - 79 favorites
 
 This list highlights the top 5 artists who have captivated the audience with their art, making a significant impact in the past month.
-```

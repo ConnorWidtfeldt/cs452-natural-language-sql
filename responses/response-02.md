@@ -4,11 +4,9 @@ Discover Artworks Through Community Curated Pools
 
 ## Prompt:
 
-```
 Find the top 10 pools by the number of posts they contain.
 For each pool, list the pool's name, the number of posts, and the name of the creator of the pool.
 Sort the pools in descending order based on the number of posts.
-```
 
 ## Generated Query:
 
@@ -30,7 +28,6 @@ LIMIT 10
 
 ## Friendly Response:
 
-```
 Here's a simplified summary of what we found about the most popular pools on the website, based on the number of posts they have:
 
 We listed the top 10 pools that have the most posts. Each of these pools contains 15 posts each, which is quite impressive. For each pool, we've also included who created it, so you get to know the creative minds behind these popular collections.
@@ -47,4 +44,3 @@ We listed the top 10 pools that have the most posts. Each of these pools contain
 10. "Quo perferendis nemo eligendi." created by Truman Mitchell
 
 It's great to see such a diverse range of pools making it to the top, with each creator bringing something unique to the platform.
-```

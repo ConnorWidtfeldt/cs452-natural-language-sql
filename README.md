@@ -15,10 +15,10 @@ The database serves as the backbone for a fictitious art-sharing website, design
 
 **Request:** 
 
-> Get all posts (and their score) that have the tag "mountain".
-> For each post, include the names of the artists who are associated with it.
-> Sort by score then by creation date.
-> Limit to the top 5 posts (by score).
+Get all posts (and their score) that have the tag "mountain".
+For each post, include the names of the artists who are associated with it.
+Sort by score then by creation date.
+Limit to the top 5 posts (by score).
 
 **Generated Query:**
 ```sql
@@ -43,9 +43,10 @@ LIMIT 5
 ```
 
 **Friendly Response:**
-```
+
 Here's a list of the top 5 posts tagged with "mountain" that have received highest scores. Each post is also linked to several artists who contributed to the creation of the post. The list is sorted to feature the posts with the highest score first, and then by the date they were created if scores are the same. For each post, you'll find its identifying number, the total score it received, and the names of all associated artists.
 
+```
 ┌───────────┬───────┬────────────────────────────────────────────────────────────────────────────┐
 │ Post #    │ Score │ Artists                                                                    │
 ├───────────┼───────┼────────────────────────────────────────────────────────────────────────────┤
@@ -59,6 +60,7 @@ Here's a list of the top 5 posts tagged with "mountain" that have received highe
 ├───────────┼───────┼────────────────────────────────────────────────────────────────────────────┤
 │ Post #63  │ 8     │ Manet, Pollock, Joan Miro, Warhol (repeats)                                │
 └───────────┴───────┴────────────────────────────────────────────────────────────────────────────┘
+```
 
 Summary:
 - "Post #9" secured the highest score of 16, with contributions from renowned artists such as Kandinsky, Degas, Pissarro, and Michelangelo.
@@ -66,9 +68,8 @@ Summary:
 - The list concludes with "Post #99" and "Post #63," both striking scores of 8. Among their artists, we see legends such as Klimt, Picasso, Manet, and Pollock.
 
 Each post mentioned is exemplary in its own right, gathering substantial scores and spotlighting the immense talent of their contributing artists.
-```
 
-See more responses in the [responses](responses) directory.
+> See more responses in the [responses](responses) directory.
 
 ### Prompting Strategies
 

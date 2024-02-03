@@ -4,12 +4,10 @@ Highlight Comments with Exceptional Community Response
 
 ## Prompt:
 
-```
 Find all comments on posts that have received a net score of 5 or more (total upvotes minus downvotes) in the last month.
 Include the comment's body, the net score, the post ID it belongs to, and the name of the user who posted the comment. 
 Sort by net score in descending order.
 Limit to 5 comments.
-```
 
 ## Generated Query:
 
@@ -32,7 +30,6 @@ LIMIT 5
 
 ## Friendly Response:
 
-```
 Here's a list of the top 5 most popular comments from the last month, ranked by the net number of likes they've received (likes minus dislikes):
 
 1. Comment by Deon Turner on post #144 received a net score of 6 likes. The comment is:
@@ -51,4 +48,3 @@ Here's a list of the top 5 most popular comments from the last month, ranked by 
 "Sed sint et. Id dolorum accusantium. Laboriosam at voluptas."
 
 These comments stood out in the past month for their popularity, engaging various users in discussions and earning their appreciation.
-```

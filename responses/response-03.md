@@ -4,11 +4,9 @@ Identify Trending Tags in Recent Posts
 
 ## Prompt:
 
-```
 List the top 15 most used tags in posts created in the last week.
 Include the tag name and the count of posts associated with each tag.
 Order the list by count in descending order.
-```
 
 ## Generated Query:
 
@@ -27,7 +25,6 @@ LIMIT 15
 
 ## Friendly Response:
 
-```
 Here's a summary of the most popular tags used in posts over the last month:
 
 1. Tag: cat, Posts: 36
@@ -48,4 +45,3 @@ Here's a summary of the most popular tags used in posts over the last month:
 The tags 'cat', 'plant', and 'arrange' are tied for the most used, each appearing in 36 posts in the last month. There's a significant drop below these top three, with 'contradict' only appearing in 3 posts. All other tags in the list were used in just one post each. 
 
 This data shows the diverse interests of our users, ranging from nature-oriented tags like 'cat', 'plant', and 'mountain' to more abstract concepts like 'arrange' and 'contradict'. The variety of tags also highlights different contents that have been shared and discussed in the past month.
-```
